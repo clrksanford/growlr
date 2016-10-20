@@ -84,7 +84,10 @@ function loadGrowls() {
   console.log('growls');
 
   $.ajax({
-  url: 'http://localhost:3000/'
+  url: 'http://localhost:3000/',
+  headers: {
+    'Authorization': 'Bearer ' + localStorage.getItem('idToken')
+  }
     })
   .done(function (response) {
     console.log(response);
