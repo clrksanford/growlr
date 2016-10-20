@@ -25,7 +25,7 @@ lock.on('authenticated',function (authResult) {
 });
 
 $(document).ready(function () {
-  
+
   $('#btn-login').on('click',function () {
     lock.show();
   });
@@ -107,6 +107,23 @@ function loadGrowl(data) {
   // console.log(data);
   var li = $('<li />')
   li.text(data.content)
+  li.data('id',data._id)
+
+  var deleteLink = $('<a />')
+  deleteLink.text('delete')
+  deleteLink.addClass('delete-link');
+  deleteLink.attr('href','#')
+
+  li.append(deleteLink)
+
+  var nickName = $('<h4 />')
+  nickName.text(data.username)
+  li.append(nickName)
+
+  var profilePicture = $('<img />')
+  profilePicture.attr('src',data.profilePic)
+  li.append(profilePicture)
+
 
   $('#user-growls').append(li)
   $('#spostGrowl').val('')
@@ -132,7 +149,7 @@ function postGrowl() {
    }
   })
    .done(function (data) {
-
+     
    })
    .fail(function (jqXHR, textStatus, errorThrown) {
      console.log(errorThrown);

@@ -23,6 +23,16 @@ router.get('/', function(req, res, next) {
   });
 });
 
+router.delete('/:Id', function (req, res, next) {
+  Student.findById(req.params.studentId).remove(function (err) {
+    if (err) {
+      res.status(500).send()
+    } else {
+      res.status(204).send()
+    }
+  })
+})
+
 // POST route
 router.post('/', function (req, res, next) {
   req.body = _.pick(req.body, ['content', 'date', 'userId', 'username', 'profilePic'])
