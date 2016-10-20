@@ -12,8 +12,8 @@ var jwt = require('express-jwt');
 
 // Configure jwt check
 var jwtCheck = jwt({
-  secret: new Buffer('YOUR_CLIENT_SECRET', 'base64'),
-  audience: 'YOUR_CLIENT_ID'
+  secret: new Buffer(process.env.YOUR_CLIENT_SECRET, 'base64'),
+  audience: process.env.YOUR_CLIENT_ID
 });
 
 // Connect to DB with mongoose

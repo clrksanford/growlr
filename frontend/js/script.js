@@ -8,69 +8,72 @@ var lock = new Auth0Lock('vcBcOaVmDWBXwgF8wsBctGBzsX7lGUhE', 'rattlesnakemilk.au
 
 lock.on('authenticated',function (authResult) {
   //console.log(authResult);
-  localStorage.setItem('idToken',authResult.idToken)
+  localStorage.setItem('idToken', authResult.idToken);
   loadGrowls();
   showProfile();
+
+  lock.getProfile(localStorage.getItem('idToken'),function (error,profile) {
+    if (error) {
+      logout();
+    } else {
+      // console.log('profile',profile);
+      localStorage.setItem('username', profile.nickname);
+      localStorage.setItem('profilePic', profile.picture);
+      localStorage.setItem('userId', profile.user_id);
+    }
+  });
 });
 
-
 $(document).ready(function () {
-  console.log('growler');
-
+  
   $('#btn-login').on('click',function () {
     lock.show();
-  })
+  });
 
   $('#btn-logout').on('click', function (e) {
     e.preventDefault();
-    logout()
-  })
+    logout();
+  });
+
+  $('#growler').on('submit', function (e) {
+    e.preventDefault();
+    postGrowl();
+  });
 
   if (isLoggedIn()) {
     loadGrowls();
-    showProfile()
-}
-
-
+    showProfile();
+  }
 });
 
 function showProfile() {
   console.log('showprofile');
-  $('#btn-login').hide()
-  $('#app-info').show()
-  lock.getProfile(localStorage.getItem('idToken'),function (error,profile) {
-    if (error) {
-      logout()
-    } else {
-      console.log('profile',profile);
-      $('#username').text(profile.nickname)
-      $('#profilepic').attr('src',profile.picture)
-  }
-})
+  $('#btn-login').hide();
+  $('#app-info').show();
 }
 
 function isLoggedIn() {
   if (localStorage.getItem('idToken')) {
-  return isJwtValid();
+    return isJwtValid();
   } else {
-  return false;
+    return false;
   }
 }
 
 function isJwtValid() {
-  var token = localStorage.getItem('idToken')
+  var token = localStorage.getItem('idToken');
   if (!token) {
     return false;
   }
-  var encodedPayload = token.split('.')[1]
-  console.log('encodedPayload', encodedPayload);
-  var decodedPayload = JSON.parse(atob(encodedPayload))
-  console.log('decodedPayload', decodedPayload);
+  var encodedPayload = token.split('.')[1];
+  // console.log('encodedPayload', encodedPayload);
+  var decodedPayload = JSON.parse(atob(encodedPayload));
+  // console.log('decodedPayload', decodedPayload);
   var exp = decodedPayload.exp;
-  console.log('exp', exp);
+  // console.log('exp', exp);
   var expirationDate = new Date(exp * 1000);
-  console.log('expirationDate', expirationDate);
-  return new Date() <= expirationDate
+  // console.log('expirationDate', expirationDate);
+  return new Date() <= expirationDate;
 }
 
 
@@ -90,7 +93,7 @@ function loadGrowls() {
   }
     })
   .done(function (data) {
-    console.log(data);
+    // console.log(data);
     data.forEach(function (datum) {
       loadGrowl(datum)
     })
@@ -101,11 +104,37 @@ function loadGrowls() {
 }
 
 function loadGrowl(data) {
-  console.log(data);
+  // console.log(data);
   var li = $('<li />')
   li.text(data.content)
 
   $('#user-growls').append(li)
   $('#spostGrowl').val('')
   $
+}
+
+function postGrowl() {
+
+  var data = {
+    content: $('#postGrowl').val(),
+    date: new Date(),
+    userId: localStorage.getItem('userId'),
+    username: localStorage.getItem('username'),
+    profilePic: localStorage.getItem('profilePic')
+  };
+
+  $.ajax({
+   method: 'POST',
+   url: 'http://localhost:3000/',
+   data: data,
+   headers: {
+     'Authorization': 'Bearer ' + localStorage.getItem('idToken')
+   }
+  })
+   .done(function (data) {
+
+   })
+   .fail(function (jqXHR, textStatus, errorThrown) {
+     console.log(errorThrown);
+   });
 }
