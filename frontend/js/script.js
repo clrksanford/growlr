@@ -37,12 +37,25 @@ $(document).ready(function () {
 
   $('#growler').on('submit', function (e) {
     e.preventDefault();
-    postGrowl();
+
+    var growlLength = $('#postGrowl').val().length;
+    if(growlLength === 0) {
+
+      alert('You have to write something!');
+    }
+    else if(growlLength > 141) {
+
+      alert("Your growl is too long!");
+    }
+    else {
+      postGrowl();
+    }
+
   });
 
-  $(document).on('click', 'li', function (e) {
+  $(document).on('click', 'a.delete-link', function (e) {
     e.preventDefault();
-    var nearestGrowl = $(this);
+    var nearestGrowl = $(this).parent('li');
     deleteGrowl(nearestGrowl);
   })
 
@@ -54,6 +67,7 @@ $(document).ready(function () {
 
 function showProfile() {
   console.log('showprofile');
+  $('img#profilepic').attr('src', localStorage.getItem('profilepic'));
   $('#btn-login').hide();
   $('#app-info').show();
 }
@@ -84,9 +98,15 @@ function isJwtValid() {
 
 
 function logout() {
-  console.log('logout');
-  localStorage.removeItem('idToken')
+  localStorage.removeItem('idToken');
+  localStorage.removeItem('username');
+  localStorage.removeItem('profilePic');
+  localStorage.removeItem('userId');
   window.location.href='/';
+}
+
+function checkLength() {
+
 }
 
 function loadGrowls() {
@@ -112,9 +132,9 @@ function loadGrowls() {
 function loadGrowl(data) {
   // console.log(data);
 
-  var li = $('<li />')
-  li.text(data.content)
-  li.data('id',data._id)
+  var li = $('<li />');
+  li.text(data.content);
+  li.data('id', data._id);
   li.data('userId', data.userId);
 
   var deleteLink = $('<a />')
@@ -133,7 +153,9 @@ function loadGrowl(data) {
   li.append(profilePicture)
 
   $('#user-growls').prepend(li)
+
   $('#postGrowl').val('')
+
 
 }
 
