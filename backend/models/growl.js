@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var growlSchema = mongoose.Schema({
   content: String,
   date: Date,
+  userId: String,
   username: String,
   profilePic: String
 });
