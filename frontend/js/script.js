@@ -10,7 +10,7 @@ lock.on('authenticated',function (authResult) {
   //console.log(authResult);
   localStorage.setItem('idToken',authResult.idToken)
   loadGrowls();
-  showProfile()
+  showProfile();
 });
 
 
@@ -84,7 +84,7 @@ function loadGrowls() {
   console.log('growls');
 
   $.ajax({
-  url: 'http://localhost:3000'
+  url: 'http://localhost:3000/'
     })
   .done(function (response) {
     console.log(response);
