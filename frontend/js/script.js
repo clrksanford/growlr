@@ -67,6 +67,7 @@ $(document).ready(function () {
 
 function showProfile() {
   console.log('showprofile');
+  $('img#profilepic').attr('src', localStorage.getItem('profilepic'));
   $('#btn-login').hide();
   $('#app-info').show();
 }
@@ -97,8 +98,10 @@ function isJwtValid() {
 
 
 function logout() {
-  console.log('logout');
-  localStorage.removeItem('idToken')
+  localStorage.removeItem('idToken');
+  localStorage.removeItem('username');
+  localStorage.removeItem('profilePic');
+  localStorage.removeItem('userId');
   window.location.href='/';
 }
 
