@@ -39,4 +39,23 @@ router.post('/', function (req, res, next) {
   });
 });
 
+// DELETE route
+router.delete('/:Id', function (req, res, next) {
+ Growl.findById(req.params.Id, function (err, growl) {
+   if(err) {
+     res.status(500).send();
+   } else if (!growl) {
+     res.status(404).send();
+   } else {
+     growl.remove(function (err) {
+       if (err) {
+         res.status(500).send()
+       } else {
+         res.status(204).send()
+       }
+     });
+   }
+ });
+});
+
 module.exports = router;
