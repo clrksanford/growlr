@@ -132,9 +132,9 @@ function loadGrowl(data) {
   profilePicture.attr('src',data.profilePic)
   li.append(profilePicture)
 
-  $('#user-growls').append(li)
-  $('#spostGrowl').val('')
-  $
+  $('#user-growls').prepend(li)
+  $('#postGrowl').val('')
+
 }
 
 function postGrowl() {
@@ -156,7 +156,8 @@ function postGrowl() {
    }
   })
    .done(function (data) {
-
+      $('#user-growls').empty()
+      loadGrowls()
    })
    .fail(function (jqXHR, textStatus, errorThrown) {
      console.log(errorThrown);
