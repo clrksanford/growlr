@@ -40,6 +40,12 @@ $(document).ready(function () {
     postGrowl();
   });
 
+  $(document).on('click', 'li', function (e) {
+    e.preventDefault();
+    var nearestGrowl = $(this);
+    deleteGrowl(nearestGrowl);
+  })
+
   if (isLoggedIn()) {
     loadGrowls();
     showProfile();
@@ -105,9 +111,11 @@ function loadGrowls() {
 
 function loadGrowl(data) {
   // console.log(data);
+
   var li = $('<li />')
   li.text(data.content)
   li.data('id',data._id)
+  li.data('userId', data.userId);
 
   var deleteLink = $('<a />')
   deleteLink.text('delete')
@@ -123,7 +131,6 @@ function loadGrowl(data) {
   var profilePicture = $('<img />')
   profilePicture.attr('src',data.profilePic)
   li.append(profilePicture)
-
 
   $('#user-growls').append(li)
   $('#spostGrowl').val('')
@@ -149,9 +156,33 @@ function postGrowl() {
    }
   })
    .done(function (data) {
-     
+
    })
    .fail(function (jqXHR, textStatus, errorThrown) {
      console.log(errorThrown);
    });
+}
+
+function deleteGrowl(growl) {
+
+  // Check to make sure userId in local storage is the same as userId of post
+  if(growl.data().userId !== localStorage.getItem('userId')) {
+    alert('You do not have access to delete that Growl!');
+    return;
+  }
+
+  $.ajax({
+    method: 'DELETE',
+    url: 'http://localhost:3000/' + growl.data().id,
+    headers: {
+      'Authorization': 'Bearer ' + localStorage.getItem('idToken')
+    }
+  })
+    .done(function (response) {
+      console.log(response);
+      growl.remove();
+    })
+    .fail(function (jqXHR, textStatus, errorThrown) {
+      console.log(errorThrown);
+    })
 }
