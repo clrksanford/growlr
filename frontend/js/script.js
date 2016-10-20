@@ -89,11 +89,23 @@ function loadGrowls() {
     'Authorization': 'Bearer ' + localStorage.getItem('idToken')
   }
     })
-  .done(function (response) {
-    console.log(response);
+  .done(function (data) {
+    console.log(data);
+    data.forEach(function (datum) {
+      loadGrowl(datum)
+    })
   })
   .fail(function (jqXHR, textStatus, errorThrown) {
     console.log(errorThrown);
   });
+}
 
+function loadGrowl(data) {
+  console.log(data);
+  var li = $('<li />')
+  li.text(data.content)
+
+  $('#user-growls').append(li)
+  $('#spostGrowl').val('')
+  $
 }
